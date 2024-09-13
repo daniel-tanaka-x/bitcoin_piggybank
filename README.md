@@ -7,8 +7,10 @@ Once it hits 21, it will generate a message to move your sats to somewhere else.
 ## Hardware list
 - Raspberry Pi Zero 2W: https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/
 - Waveshare 2.13inch E-Ink display HAT for Raspberry Pi: https://www.waveshare.com/2.13inch-e-paper-hat.htm
+- microSD card 4GB or more [use Raspberry Pi OS Lite (32-bit)]
 
 Unfortunately, I have no skills to create 3D piggyban models for this project. So there is no cases for it. I'm sorry.
+
 
 ## Commands to prepare the environment
 
