@@ -2,9 +2,9 @@
 
 Save your sats in a Bitcoin Piggybank! 
 
-Bitcoin Piggybank is a E-ink-based Bitcoin address generator from xpub.
-It will generate a new unused bitcoin address everytime it detects an incoming tx until the total number of UTXO reaches 21.
-Once it hits 21, it will generate a message to move your sats to somewhere else. It works only for SegWit, fyi.
+Bitcoin Piggybank is a E-ink-based Bitcoin address generator from an xpub file.
+Piggybank will generate a new unused bitcoin address every time it detects an incoming tx until the total number of UTXO reaches 21.
+Once it hits 21, it will cease to display Bitcoin addresses and swithc to generate a message to move your sats to somewhere else. It works only for SegWit, fyi.
 
 ![ダウンロード (41)](https://github.com/user-attachments/assets/1390a4c8-eb66-488e-9806-f5a0d80675eb)
 
