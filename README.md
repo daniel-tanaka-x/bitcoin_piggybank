@@ -68,11 +68,10 @@ nano run_piggybank.sh
 chmod +x run_piggybank.sh
 ```
 
-Set up run_piggybank.sh for boot
+Set up run_piggybank.sh for boot and write down the next line (@reboot one) at the bottom of the line.
 ```
 crontab -e
 ```
-Write this down at the bottom of the line.
 ```
 @reboot /home/daniel/run_piggybank.sh >> /home/daniel/piggybank.log 2>&1
 ```
