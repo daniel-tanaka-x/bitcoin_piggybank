@@ -1,8 +1,10 @@
 # Bitcoin Piggybank
 
 Save your sats in a Bitcoin Piggybank! 
+
+Bitcoin Piggybank is a E-ink-based Bitcoin address generator from xpub.
 It will generate a new unused bitcoin address everytime it detects an incoming tx until the total number of UTXO reaches 21.
-Once it hits 21, it will generate a message to move your sats to somewhere else.
+Once it hits 21, it will generate a message to move your sats to somewhere else. It works only for SegWit, fyi.
 
 ![ダウンロード (41)](https://github.com/user-attachments/assets/1390a4c8-eb66-488e-9806-f5a0d80675eb)
 
@@ -14,6 +16,7 @@ Feel free to change the messages on the display.
 - Waveshare 2.13inch E-Ink display HAT for Raspberry Pi: https://www.waveshare.com/2.13inch-e-paper-hat.htm
 - microSD card 4GB or more [use Raspberry Pi OS Lite (32-bit)]
 - Raspberry Pi Charger and/or mobile battery for Raspberry Pi (I use mobile battery named [UPS-Lite V1.2 Power Board + Battery])
+- Mobile, PC or HWW to make a seed and generate a HD BIP89 zpub string.
 
 Unfortunately, I have no skills to create 3D models for this project. So there is no cases for it. I'm sorry.
 
