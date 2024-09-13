@@ -1,5 +1,9 @@
 # Bitcoin Piggybank
 
+Save your sats in a Bitcoin Piggybank! 
+It will generate a new unused bitcoin address everytime it detects an incoming tx until the total number of UTXO reaches 21.
+Once it hits 21, it will generate a message to move your sats to somewhere else.
+
 Prepare a virtual env
 ```
 python3 -m venv venv
