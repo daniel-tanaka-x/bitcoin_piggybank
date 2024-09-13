@@ -4,7 +4,9 @@ Save your sats in a Bitcoin Piggybank!
 It will generate a new unused bitcoin address everytime it detects an incoming tx until the total number of UTXO reaches 21.
 Once it hits 21, it will generate a message to move your sats to somewhere else.
 
+Example:
 ![ダウンロード (41)](https://github.com/user-attachments/assets/1390a4c8-eb66-488e-9806-f5a0d80675eb)
+Feel free to change the messages on the display.
 
 ## Hardware list
 - Raspberry Pi Zero 2W: https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/
