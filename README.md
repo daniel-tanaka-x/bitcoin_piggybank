@@ -10,7 +10,7 @@ Once it hits 21, it will generate a message to move your sats to somewhere else.
 - microSD card 4GB or more [use Raspberry Pi OS Lite (32-bit)]
 - Raspberry Pi Charger and/or mobile battery for Raspberry Pi (I use mobile battery named [UPS-Lite V1.2 Power Board + Battery])
 
-Unfortunately, I have no skills to create 3D piggyban models for this project. So there is no cases for it. I'm sorry.
+Unfortunately, I have no skills to create 3D models for this project. So there is no cases for it. I'm sorry.
 
 
 ## Commands to prepare the environment
