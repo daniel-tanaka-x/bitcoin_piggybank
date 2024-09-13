@@ -63,6 +63,8 @@ nano zpub.json
 Check the path in the script and edit it for your environement and give a permission to execute
 ```
 nano run_piggybank.sh
+```
+```
 chmod +x run_piggybank.sh
 ```
 
