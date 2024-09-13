@@ -71,5 +71,8 @@ chmod +x run_piggybank.sh
 Set up run_piggybank.sh for boot
 ```
 crontab -e
+```
+Write this down at the bottom of the line.
+```
 @reboot /home/daniel/run_piggybank.sh >> /home/daniel/piggybank.log 2>&1
 ```
