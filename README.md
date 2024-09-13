@@ -1,4 +1,4 @@
-# bitcoin_piggybank
+# Bitcoin Piggybank
 
 Prepare a virtual env
 ```
