@@ -44,18 +44,18 @@ pip install coincurve==19.0.1 Pillow qrcode[pil] bip_utils==2.9.3
 # Prompt user to manually edit the zpub.json file
 echo "Please edit the zpub.json file to set your xpub."
 echo "To edit the file, run the following command:"
-echo "nano /home/daniel/e-Paper/RaspberryPi_JetsonNano/python/examples/zpub.json"
+echo "nano /home/pi/e-Paper/RaspberryPi_JetsonNano/python/examples/zpub.json"
 
 # Prompt user to edit the run_piggybank.sh script
 echo "Please check the path in the run_piggybank.sh script and edit it for your environment."
 echo "To edit the file, run the following command:"
-echo "nano /home/daniel/run_piggybank.sh"
+echo "nano /home/pi/run_piggybank.sh"
 
 # Set execute permissions on run_piggybank.sh
-chmod +x /home/daniel/run_piggybank.sh
+chmod +x /home/pi/run_piggybank.sh
 
 # Add the run_piggybank.sh to crontab for boot execution
-echo "@reboot /home/daniel/run_piggybank.sh >> /home/daniel/piggybank.log 2>&1" | crontab -
+echo "@reboot /home/pi/run_piggybank.sh >> /home/pi/piggybank.log 2>&1" | crontab -
 
 # Confirmation message
 echo "Setup completed. Ensure you have edited zpub.json and run_piggybank.sh files before rebooting."
