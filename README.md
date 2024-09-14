@@ -86,5 +86,5 @@ Set up run_piggybank.sh for boot and write down the next line (@reboot one) at t
 crontab -e
 ```
 ```
-@reboot /home/daniel/run_piggybank.sh >> /home/daniel/piggybank.log 2>&1
+@reboot /home/pi/run_piggybank.sh >> /home/pi/piggybank.log 2>&1
 ```
