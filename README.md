@@ -22,6 +22,8 @@ Unfortunately, I have no skills to create 3D models for this project. So there i
 
 
 ## Commands to prepare the environment
+You can run the setup_piggybank.sh instead of following all the commands down below. Buf if you wanna do it manually, you can follow them.
+
 
 Prepare a virtual env
 ```
