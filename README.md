@@ -90,9 +90,9 @@ crontab -e
 ```
 
 # Automatic shutdown
-If you want it to connect to electricty 24/7, it is better to set up automatic shutdown by systemd and power on via SwitchBot Plug or smart plug.
+If you need it to be connected to electricity 24/7, it's better to set up an automatic shutdown using systemd and use a SwitchBot Plug or smart plug to power it on.
 
-Set up shutdown_after_30min.service
+First, set up shutdown_after_30min.service
 ```
 sudo nano /etc/systemd/system/shutdown_after_30min.service
 ```
