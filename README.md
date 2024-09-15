@@ -1,15 +1,12 @@
 # Bitcoin Piggybank
 
-Save your sats in a Bitcoin Piggybank! 
+Save your sats in a Bitcoin Piggybank!
 
-Bitcoin Piggybank is a E-ink-based Bitcoin address generator from an xpub file.
-Piggybank will generate a new unused bitcoin address every time it detects an incoming tx until the total number of UTXO reaches 21.
-Once it hits 21, it will cease to display Bitcoin addresses and swithc to generate a message to move your sats to somewhere else. It works only for SegWit, fyi.
+The Bitcoin Piggybank is an E-Ink-based Bitcoin address generator that works from an xpub file. It generates a new unused Bitcoin address each time it detects an incoming transaction, continuing until the total number of UTXOs reaches 21. Once the limit is hit, it will stop displaying Bitcoin addresses and switch to a message prompting you to move your sats elsewhere. It only supports SegWit, just so you know.
 
 ![ダウンロード (41)](https://github.com/user-attachments/assets/1390a4c8-eb66-488e-9806-f5a0d80675eb)
 
-This is an example.
-Feel free to change the messages on the display.
+This is just an example. Feel free to customize the messages displayed.
 
 ## Hardware list
 - Raspberry Pi Zero 2W: https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/
@@ -18,12 +15,10 @@ Feel free to change the messages on the display.
 - Raspberry Pi Charger and/or mobile battery for Raspberry Pi (I use mobile battery named [UPS-Lite V1.2 Power Board + Battery])
 - Mobile, PC or HWW to make a seed and generate a HD BIP89 SegWit zpub string.
 
-Unfortunately, I have no skills to create 3D models for this project. So there is no cases for it. I'm sorry.
-
+Unfortunately, I don't have the skills to create 3D models for this project, so there are no available cases for it. 
 
 ## Commands to prepare the environment
-You can run the setup_piggybank.sh instead of following all the commands down below. Buf if you wanna do it manually, you can follow them.
-
+You can run the `setup_piggybank.sh` script instead of following all the commands below. But if you'd prefer to do it manually, you can follow the steps listed.
 
 Prepare a virtual env
 ```
