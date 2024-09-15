@@ -89,7 +89,8 @@ crontab -e
 @reboot /home/pi/run_piggybank.sh >> /home/pi/piggybank.log 2>&1
 ```
 
-# Shut down automatically after 30 mins
+# Automatic shutdown
+If you want it to connect to electricty 24/7, it is better to set up automatic shutdown by systemd and power on via SwitchBot Plug or smart plug.
 ```
 sudo nano /etc/systemd/system/shutdown_after_30min.service
 ```
