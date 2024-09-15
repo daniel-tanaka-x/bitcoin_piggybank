@@ -91,10 +91,11 @@ crontab -e
 
 # Automatic shutdown
 If you want it to connect to electricty 24/7, it is better to set up automatic shutdown by systemd and power on via SwitchBot Plug or smart plug.
+
+Set up shutdown_after_30min.service
 ```
 sudo nano /etc/systemd/system/shutdown_after_30min.service
 ```
-
 ```
 [Unit]
 Description=Shut down the Raspberry Pi after 30 minutes
@@ -107,10 +108,10 @@ ExecStart=/sbin/shutdown -h now
 WantedBy=multi-user.target
 ```
 
+Set up shutdown_after_30min.timer
 ```
 sudo nano /etc/systemd/system/shutdown_after_30min.timer
 ```
-
 ```
 [Unit]
 Description=Run shutdown service 30 minutes after boot
@@ -122,7 +123,7 @@ Unit=shutdown_after_30min.service
 [Install]
 WantedBy=timers.target
 ```
-
+Enable and start it.
 ```
 sudo systemctl enable shutdown_after_30min.timer
 sudo systemctl start shutdown_after_30min.timer
