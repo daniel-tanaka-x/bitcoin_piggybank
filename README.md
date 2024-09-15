@@ -88,3 +88,41 @@ crontab -e
 ```
 @reboot /home/pi/run_piggybank.sh >> /home/pi/piggybank.log 2>&1
 ```
+
+# Shut down automatically after 30 mins
+```
+sudo nano /etc/systemd/system/shutdown_after_30min.service
+```
+
+```
+[Unit]
+Description=Shut down the Raspberry Pi after 30 minutes
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/shutdown -h now
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```
+sudo nano /etc/systemd/system/shutdown_after_30min.timer
+```
+
+```
+[Unit]
+Description=Run shutdown service 30 minutes after boot
+
+[Timer]
+OnBootSec=30min
+Unit=shutdown_after_30min.service
+
+[Install]
+WantedBy=timers.target
+```
+
+```
+sudo systemctl enable shutdown_after_30min.timer
+sudo systemctl start shutdown_after_30min.timer
+```
