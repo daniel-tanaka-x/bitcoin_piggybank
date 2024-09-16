@@ -1,0 +1,19 @@
+{
+    "bybit": {
+        "apiKey": "BYBIT_API_KEY",
+        "secret": "BYBIT_SECRET_KEY"
+    },
+    "bitget": {
+        "apiKey": "BITGET_API_KEY",
+        "secret": "BITGET_SECRET_KEY"
+    },
+    "kucoin": {
+        "apiKey": "KUCOIN_API_KEY",
+        "secret": "KUCOIN_SECRET_KEY",
+        "password": "KUCOIN_PASSWORD"
+    },
+    "mexc": {
+        "apiKey": "MEXC_API_KEY",
+        "secret": "MEXC_SECRET_KEY"
+    }
+}
