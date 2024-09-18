@@ -11,13 +11,9 @@ from bip_utils import Bip84, Bip84Coins, Bip44Changes
 # ==========================
 # Configuration Constants
 # ==========================
-BUY_AMOUNT = 30  # USD amount to buy in BTC when buy signal is triggered
-BTC_THRESHOLD = 90  # USD threshold for triggering BTC withdrawal
-RSI_PERIOD = 14  # RSI period to calculate
-RSI_BUY_THRESHOLD = 20  # RSI value below which we consider buying BTC
-FNG_EXTREME_FEAR_THRESHOLD = 25  # Fear and Greed Index value indicating extreme fear
-WITHDRAW_THRESHOLD = 90  # BTC value in USD to trigger withdrawal
-TIMEFRAME_HOURS = 24  # Number of hours for RSI analysis
+BUY_AMOUNT = 30  # Amount in USD to buy
+BTC_THRESHOLD = 90  # Threshold in USD to withdraw
+RSI_PERIOD = 14
 
 # ==========================
 # Helper Functions
@@ -42,31 +38,19 @@ def fetch_utxos(address):
     return []
 
 
-def generate_next_address(zpub, index):
-    """Generate the next Bitcoin address from a given zpub using BIP84 (for a given index)."""
+def generate_first_address(zpub):
+    """Generate the first Bitcoin address from a given zpub using BIP84 (index 0)."""
     bip84_ctx = Bip84.FromExtendedKey(zpub, Bip84Coins.BITCOIN)
-    return bip84_ctx.Change(Bip44Changes.CHAIN_EXT).AddressIndex(index).PublicKey().ToAddress()
+    return bip84_ctx.Change(Bip44Changes.CHAIN_EXT).AddressIndex(0).PublicKey().ToAddress()
 
 
-def get_unused_address(zpub, starting_index=0):
-    """Generate addresses and find the first unused one by checking UTXOs."""
-    index = starting_index
-    while True:
-        address = generate_next_address(zpub, index)
-        utxos = fetch_utxos(address)
-        if len(utxos) == 0:
-            print(f"Unused address found at index {index}: {address}")
-            return address, index
-        index += 1
-
-
-def fetch_rsi_signals(btc_data):
-    """Fetch RSI signals over the last 24 hours of Bitcoin data."""
-    last_24_hours = btc_data.tail(TIMEFRAME_HOURS)
-    last_24_hours['RSI'] = talib.RSI(last_24_hours['Close'], timeperiod=RSI_PERIOD)
-    buy_signals = last_24_hours[last_24_hours['RSI'] < RSI_BUY_THRESHOLD]
+def fetch_rsi_signals(btc_data, rsi_period):
+    """Fetch RSI signals over the last 38 hours of Bitcoin data."""
+    last_24_hours = btc_data.tail(38)
+    last_24_hours['RSI'] = talib.RSI(last_24_hours['Close'], timeperiod=rsi_period)
+    buy_signals = last_24_hours[last_24_hours['RSI'] < 20]
     print(f"RSI values for the last 24 hours:\n{last_24_hours['RSI']}")
-    print(f"Buy signals (RSI < {RSI_BUY_THRESHOLD}) found: {len(buy_signals)}")
+    print(f"Buy signals (RSI < 20) found: {len(buy_signals)}")
     return len(buy_signals)
 
 
@@ -74,8 +58,8 @@ def fetch_fear_and_greed_index():
     """Fetch the Fear and Greed Index and check for extreme fear."""
     fng_data = load_json("https://api.alternative.me/fng/?limit=1")['data'][0]
     fng_value = int(fng_data['value'])
-    print(f"Fear and Greed Index: {fng_value}, Extreme fear: {fng_value <= FNG_EXTREME_FEAR_THRESHOLD}")
-    return fng_value <= FNG_EXTREME_FEAR_THRESHOLD
+    print(f"Fear and Greed Index: {fng_value}, Extreme fear: {fng_value <= 25}")
+    return fng_value <= 25
 
 
 def find_best_exchange_for_btc(exchanges):
@@ -121,7 +105,7 @@ def execute_buy_order(exchange, buy_amount, best_price):
         print(f"Failed to buy BTC: {e}")
 
 
-def check_and_withdraw_btc(exchanges, zpub, btc_threshold, current_index):
+def check_and_withdraw_btc(exchanges, first_address, btc_threshold):
     """Check balances and withdraw BTC if the value exceeds a threshold."""
     for exchange_name, exchange in exchanges.items():
         try:
@@ -131,34 +115,33 @@ def check_and_withdraw_btc(exchanges, zpub, btc_threshold, current_index):
 
             # Fetch BTC balance
             btc_balance = exchange.fetch_balance()['total'].get('BTC', 0)
-            btc_value = btc_balance * exchange.fetch_ticker('BTC/USDT')['last']
+            btc_price = exchange.fetch_ticker('BTC/USDT')['last']
+            btc_value = btc_balance * btc_price
 
             print(f"BTC balance on {exchange_name}: {btc_balance}, valued at {btc_value} USD")
 
             # Check if BTC value exceeds the threshold for withdrawal
             if btc_value >= btc_threshold:
-                # Find a new unused address
-                new_unused_address, current_index = get_unused_address(zpub, current_index)
-                print(f"New unused Bitcoin address for withdrawal: {new_unused_address}")
+                print(f"Using the first Bitcoin address for withdrawal: {first_address}")
 
                 # Set up withdrawal parameters for specific exchanges
                 withdrawal_params = {}
                 if exchange_name == 'bybit':
-                    withdrawal_params = {'chain': 'BTC', 'forceChain': 1, 'accountType': 'SPOT'}
+                    withdrawal_params = {'chain': 'BTC'}
                 elif exchange_name == 'bitget':
-                    withdrawal_params = {'transferType': 'on_chain', 'chain': 'BTC', 'size': str(btc_balance)}
+                    withdrawal_params = {'chain': 'BTC'}
                 elif exchange_name == 'kucoin':
                     withdrawal_params = {'network': 'BTC'}
                 elif exchange_name == 'mexc':
                     withdrawal_params = {'chain': 'BTC'}
 
                 print(f"Attempting to withdraw from {exchange_name}...")
-                print(f"BTC Balance: {btc_balance}, Address: {new_unused_address}, Params: {withdrawal_params}")
+                print(f"BTC Balance: {btc_balance}, Address: {first_address}, Params: {withdrawal_params}")
 
                 # Execute the withdrawal
                 try:
-                    withdrawal = exchange.withdraw('BTC', btc_balance, new_unused_address, None, withdrawal_params)
-                    print(f"Withdrew {btc_balance} BTC from {exchange_name} to {new_unused_address}")
+                    withdrawal = exchange.withdraw('BTC', btc_balance, first_address, None, withdrawal_params)
+                    print(f"Withdrew {btc_balance} BTC from {exchange_name} to {first_address}")
                 except Exception as e:
                     print(f"Failed to withdraw from {exchange_name}: {e}")
             else:
@@ -175,6 +158,15 @@ def main():
     api_keys = load_json("api_keys.json")
     zpub = load_json("zpub.json").get("zpub")
 
+    # Generate the first Bitcoin address from zpub
+    first_address = generate_first_address(zpub)
+    print(f"Your first Bitcoin address: {first_address}")
+    print("Please register this address on the following exchanges:")
+    print("- Bybit")
+    print("- Bitget")
+    print("- Kucoin")
+    print("- MEXC")
+
     # Setup exchange credentials
     EXCHANGES = {
         'bybit': ccxt.bybit({'apiKey': api_keys.get('bybit', {}).get('apiKey'), 'secret': api_keys.get('bybit', {}).get('secret')}),
@@ -183,10 +175,6 @@ def main():
         'mexc': ccxt.mexc({'apiKey': api_keys.get('mexc', {}).get('apiKey'), 'secret': api_keys.get('mexc', {}).get('secret')}),
     }
 
-    # Find unused Bitcoin address for receiving funds
-    unused_address, current_index = get_unused_address(zpub)
-    print(f"Using Bitcoin address (unused): {unused_address}")
-
     # Fetch Bitcoin price data for the last 5 days
     end_date = datetime.today()
     start_date = end_date - timedelta(days=5)
@@ -194,7 +182,7 @@ def main():
     btc.index = btc.index.tz_convert('UTC')
 
     # Fetch RSI signals for the last 24 hours
-    buy_signals = fetch_rsi_signals(btc)
+    buy_signals = fetch_rsi_signals(btc, RSI_PERIOD)
 
     # Check the Fear and Greed Index
     extreme_fear = fetch_fear_and_greed_index()
@@ -205,8 +193,8 @@ def main():
         if best_exchange:
             execute_buy_order(EXCHANGES[best_exchange], BUY_AMOUNT, best_price)
 
-    # Withdraw BTC if the balance exceeds $1000
-    check_and_withdraw_btc(EXCHANGES, zpub, WITHDRAW_THRESHOLD, current_index)
+    # Withdraw BTC if the balance exceeds the threshold
+    check_and_withdraw_btc(EXCHANGES, first_address, BTC_THRESHOLD)
 
 
 if __name__ == "__main__":
