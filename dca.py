@@ -125,7 +125,7 @@ def check_and_withdraw_btc(exchanges, zpub, btc_threshold, current_index):
             print(f"BTC balance on {exchange_name}: {btc_balance}, valued at {btc_value} USD")
 
             if btc_value >= btc_threshold:
-                new_unused_address, current_index = get_unused_address(zpub, current_index + 1)
+                new_unused_address, current_index = get_unused_address(zpub, current_index)
                 print(f"New unused Bitcoin address for withdrawal: {new_unused_address}")
 
                 withdrawal_params = {}
@@ -183,10 +183,10 @@ def main():
     if buy_signals > 0 or extreme_fear:
         best_exchange, best_price = find_best_exchange_for_btc(EXCHANGES)
         if best_exchange:
-            execute_buy_order(EXCHANGES[best_exchange], 300, best_price)
+            execute_buy_order(EXCHANGES[best_exchange], 30, best_price)
 
     # Withdraw BTC if the balance exceeds $1000
-    check_and_withdraw_btc(EXCHANGES, zpub, 1000, current_index)
+    check_and_withdraw_btc(EXCHANGES, zpub, 90, current_index)
 
 
 if __name__ == "__main__":
