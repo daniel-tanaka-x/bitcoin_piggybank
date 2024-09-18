@@ -30,7 +30,8 @@ def api_get(url):
 # ==========================
 # Bitcoin Functions
 # ==========================
-def get_utxos(address): return api_get(f"https://blockstream.info/api/address/{address}/utxo")
+def get_utxos(address):
+    return api_get(f"https://blockstream.info/api/address/{address}/utxo")
 
 def get_balance(address):
     data = api_get(f"https://blockstream.info/api/address/{address}")
@@ -41,14 +42,15 @@ def get_balance(address):
     return None
 
 def collect_utxos(addresses):
-    all_utxos, total_satoshis = [], 0
+    all_utxos, total_satoshis, utxo_count = [], 0, 0
     for address in addresses:
         utxos = get_utxos(address)
         if utxos:
             for utxo in utxos:
                 all_utxos.append(utxo)
                 total_satoshis += utxo['value']
-    return all_utxos, total_satoshis
+                utxo_count += 1  # Count the UTXOs
+    return all_utxos, total_satoshis, utxo_count
 
 # ==========================
 # Display Functions
@@ -70,7 +72,7 @@ def display_full_status(total_satoshis):
     epd.display(epd.getbuffer(eink_image.rotate(90, expand=True)))
     epd.sleep()
 
-def display_on_eink(index, balance, addr, count):
+def display_on_eink(index, balance, addr, utxo_count):
     epd = epd2in13_V4.EPD()
     epd.init(), epd.Clear(0xFF)
     img = Image.new('1', (epd.height, epd.width), 255)
@@ -85,7 +87,7 @@ def display_on_eink(index, balance, addr, count):
     draw.text((110, 10), "Bitcoin PiggyBank", font=font, fill=0)
     draw.text((110, 40), "Total Balance:", font=font, fill=0)
     draw.text((110, 60), f"{balance} sats", font=font, fill=0)
-    draw.text((110, 90), f"You saved {count} times!", font=font, fill=0)
+    draw.text((110, 90), f"You saved {utxo_count} times!", font=font, fill=0)
 
     epd.display(epd.getbuffer(img.rotate(90, expand=True)))
     epd.sleep()
@@ -98,7 +100,7 @@ bip84_ctx = Bip84.FromExtendedKey(zpub, Bip84Coins.BITCOIN)
 addresses = [bip84_ctx.Change(Bip44Changes.CHAIN_EXT).AddressIndex(i).PublicKey().ToAddress() for i in range(21)]
 
 while True:
-    total_balance, found_unused, count, i = 0, False, 0, 0
+    total_balance, found_unused, utxo_count, i = 0, False, 0, 0
 
     while not found_unused:
         addr = addresses[i]
@@ -114,18 +116,19 @@ while True:
 
         if balance > 0:
             total_balance += balance
-            count += 1
+            utxos = get_utxos(addr)
+            utxo_count += len(utxos)  # Count UTXOs for each address
 
         i += 1
 
-    display_on_eink(current_index, total_balance, addr, count)
+    display_on_eink(current_index, total_balance, addr, utxo_count)
     print(f"Unused address: {addr} (Index: {current_index})")
     print(f"Total Balance: {total_balance} sats")
-    print(f"Used Addresses Count: {count}")
+    print(f"Total UTXOs (Savings): {utxo_count}")
 
-    if count >= 21:
-        print("Used Addresses Count reached 21. Initiating break.")
-        utxos, total_satoshis = collect_utxos(addresses)
+    if utxo_count >= 21:  # Break piggybank when 21 UTXOs are saved
+        print("Used UTXOs Count reached 21. Initiating break.")
+        utxos, total_satoshis, total_utxo_count = collect_utxos(addresses)
         display_full_status(total_satoshis)
         break
 
