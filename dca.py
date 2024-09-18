@@ -52,7 +52,7 @@ def get_unused_address(zpub, starting_index=0):
 
 def fetch_rsi_signals(btc_data):
     """Fetch RSI signals over the last 24 hours of Bitcoin data."""
-    last_24_hours = btc_data.tail(24)
+    last_24_hours = btc_data.tail(38) # 38 may be better
     last_24_hours['RSI'] = talib.RSI(last_24_hours['Close'], timeperiod=14)
     buy_signals = last_24_hours[last_24_hours['RSI'] < 20]
     print(f"RSI values for the last 24 hours:\n{last_24_hours['RSI']}")
