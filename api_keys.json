@@ -5,7 +5,8 @@
     },
     "bitget": {
         "apiKey": "BITGET_API_KEY",
-        "secret": "BITGET_SECRET_KEY"
+        "secret": "BITGET_SECRET_KEY",
+        "password": "BITGET_PASSWORD"
     },
     "kucoin": {
         "apiKey": "KUCOIN_API_KEY",
