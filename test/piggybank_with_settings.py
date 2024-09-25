@@ -91,7 +91,7 @@ def display_ip_on_eink(ip_address):
 
     draw.text((10, 30), "No UTXOs found!", font=font, fill=0)
     draw.text((10, 50), "Connect via IP:", font=font, fill=0)
-    draw.text((10, 70), ip_address, font=font, fill=0)
+    draw.text((10, 70), f"{ip_address}:{port}", font=font, fill=0)  # Display IP with port
 
     epd.display(epd.getbuffer(img.rotate(90, expand=True)))
     epd.sleep()
