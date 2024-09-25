@@ -21,7 +21,7 @@ def generate_psbt():
     # Call the PSBT display script using subprocess
     try:
         # Using subprocess to call the psbt_display.py script and passing recipient_address as an argument
-        subprocess.Popen(['python3', 'psbt.py', recipient_address])
+        subprocess.Popen(['python3', 'generate_psbt.py', recipient_address])
         return render_template('index.html', message="PSBT is being displayed on the e-ink screen!")
     except Exception as e:
         return render_template('index.html', error=f"Failed to display PSBT: {str(e)}")
