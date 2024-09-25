@@ -2,6 +2,9 @@ from flask import Flask, request, render_template, jsonify
 import subprocess
 import os
 import json
+import base64
+import requests
+from bitcointx.wallet import PartiallySignedTransaction
 
 app = Flask(__name__)
 
@@ -28,7 +31,7 @@ def generate_psbt():
     except Exception as e:
         return render_template('index.html', error=f"Failed to display PSBT: {str(e)}")
 
-# This route will receive the signed PSBT via POST
+# Route to broadcast signed PSBT
 @app.route('/broadcast_psbt', methods=['POST'])
 def broadcast_psbt():
     signed_psbt_base64 = request.form.get('signed_psbt')
@@ -54,8 +57,7 @@ def broadcast_psbt():
     except Exception as e:
         return jsonify({"error": f"Failed to decode or broadcast PSBT: {str(e)}"}), 500
 
-
-# ======= Route to set Wi-Fi credentials and zpub ======= #
+# Route to set Wi-Fi credentials and zpub
 @app.route('/setup_wifi_and_zpub', methods=['POST'])
 def setup_wifi_and_zpub():
     ssid = request.form.get('ssid')
@@ -69,16 +71,17 @@ def setup_wifi_and_zpub():
     try:
         wpa_supplicant_conf = "/etc/wpa_supplicant/wpa_supplicant.conf"
         with open(wpa_supplicant_conf, "a") as wpa_file:
-            wpa_file.write(f"""
-network={{
-    ssid="{ssid}"
-    psk="{password}"
-}}
-""")
+            wpa_file.write(
+                '\nnetwork={{\n'
+                '    ssid="{}"\n'
+                '    psk="{}"\n'
+                '}}\n'.format(ssid, password)
+            )
         subprocess.run(['sudo', 'wpa_cli', '-i', 'wlan0', 'reconfigure'])  # Reconfigure Wi-Fi without reboot
-
+    
     except Exception as e:
         return jsonify({"error": f"Failed to set Wi-Fi credentials: {str(e)}"}), 500
+
 
     # Set up the zpub in the zpub.json file
     try:
@@ -88,8 +91,7 @@ network={{
     except Exception as e:
         return jsonify({"error": f"Failed to save zpub: {str(e)}"}), 500
 
-    return jsonify({"message": "Wi-Fi credentials and zpub set successfully!"}), 200
-
+    return jsonify({"message": "Wi-Fi credentials and zpub set successfully! Reconnect to the new Wi-Fi."}), 200
 
 # Start the Flask app
 if __name__ == '__main__':
