@@ -119,6 +119,12 @@
             <input type="text" id="recipient_address" name="recipient_address" required><br><br>
             <input type="submit" value="Generate PSBT">
         </form>
+        <h2>Submit Signed PSBT</h2>
+        <form action="/broadcast_psbt" method="POST">
+        <label for="signed_psbt">Signed PSBT (Base64):</label><br>
+        <textarea id="signed_psbt" name="signed_psbt" rows="4" cols="50" required></textarea><br><br>
+        <input type="submit" value="Broadcast PSBT">
+        </form>
     </div>
 
 </body>
