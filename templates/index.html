@@ -112,6 +112,19 @@
         {% if message %}
             <p class="success">{{ message }}</p>
         {% endif %}
+        <h2>WiFi settings & zpub</h2>       
+        <form action="/setup_wifi_and_zpub" method="POST">
+            <label for="ssid">SSID:</label><br>
+            <input type="text" id="ssid" name="ssid" required><br><br>
+        
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+        
+            <label for="zpub">zpub:</label><br>
+            <input type="text" id="zpub" name="zpub" required><br><br>
+        
+            <input type="submit" value="Submit">
+        </form>
 
         <h2>Enter Recipient Address for PSBT</h2>
         <form action="/generate_psbt" method="POST">
